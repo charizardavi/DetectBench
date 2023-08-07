@@ -1,7 +1,7 @@
 # DetectBench
-## A benchmarking tool for object detection models
+A benchmarking tool for object detection models
 
-### Work in progress: working code and usage instructions coming soon
+A work in progress: working code and usage instructions coming soon
 
 <!-- # DetectBench
 ## A benchmarking tool for object detection models
