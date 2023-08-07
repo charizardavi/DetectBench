@@ -1,0 +1,5 @@
+YoloV8
+YoloV5
+EffecientDetD1
+ResNet50
+... Will add more

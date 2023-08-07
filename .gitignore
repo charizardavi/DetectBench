@@ -1,0 +1,56 @@
+# Ignore Python-specific files
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.pyz
+*.pyw
+
+# Ignore environment-specific files
+*.env
+
+# Ignore IDE-specific files and directories
+.vscode/
+.idea/
+*.code-workspace
+*.sublime-workspace
+
+# Ignore compiled files and build directories
+dist/
+build/
+*.egg-info/
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore yolo runs
+runs/
+
+# Ignore yolo weights
+*.pt
+
+# Ignore dataset_loc files
+dataset_loc.txt
+
+# ignore downloaded repos for yolo and tensorflow
+yolov5repo/
+tfmodelrepo/
+
+# ignore downloaded datasets
+dataset/
+train/
+test/
+valid/
+README.dataset.txt
+README.roboflow.txt
+
+# ignore training and val logs
+
+runs/
+efficientdet_d1_coco17_tpu-32/
+results/
+
+*.tar.gz
+
+model_config.config
