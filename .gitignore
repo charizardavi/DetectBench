@@ -49,6 +49,7 @@ README.roboflow.txt
 
 runs/
 efficientdet_d1_coco17_tpu-32/
+centernet_hg104_512x512_coco17_tpu-8/
 results/
 
 *.tar.gz

@@ -10,7 +10,7 @@ import tarfile
 # specifically uses effecientdet d1: 640x640px images
 # train script: tfmodelrepo/research/object_detection/model_main_tf2.py
 
-class EffecientDetModel:
+class CenternetModel:
     def download_data(self, path: str):
         # Repo.clone_from("https://github.com/tensorflow/models.git", path+"/tfmodelrepo")
         # os.chdir("tfmodelrepo/research/")
@@ -18,25 +18,25 @@ class EffecientDetModel:
         # os.system("cp object_detection/packages/tf2/setup.py .")
         # os.system("python -m pip install .")
 
-        # urllib.request.urlretrieve("https://raw.githubusercontent.com/tensorflow/models/master/research/object_detection/configs/tf2/ssd_efficientdet_d1_640x640_coco17_tpu-8.config", "model_config_template.config")
-        # urllib.request.urlretrieve("http://download.tensorflow.org/models/object_detection/tf2/20200711/efficientdet_d1_coco17_tpu-32.tar.gz", "compressed_checkpoint.tar.gz")
+        # urllib.request.urlretrieve("https://raw.githubusercontent.com/tensorflow/models/master/research/object_detection/configs/tf2/centernet_hourglass104_512x512_coco17_tpu-8.config", "model_config_template.config")
+        # urllib.request.urlretrieve("http://download.tensorflow.org/models/object_detection/tf2/20200711/centernet_hg104_512x512_coco17_tpu-8.tar.gz", "compressed_checkpoint.tar.gz")
         # ckp = tarfile.open("compressed_checkpoint.tar.gz")
         # ckp.extractall()
         # ckp.close()
         
-        # extracted tar folder: efficientdet_d1_coco17_tpu-32
+        # extracted tar folder: centernet_hg104_512x512_coco17_tpu-8
         
-        # load_dotenv()
-        # roboflow_key = os.getenv("ROBOFLOW_KEY")
-        # rf = Roboflow(api_key=roboflow_key)
-        # project = rf.workspace("titulacin").project("person-detection-9a6mk")
-        # dataset = project.version(16).download("tfrecord", path)
+        load_dotenv()
+        roboflow_key = os.getenv("ROBOFLOW_KEY")
+        rf = Roboflow(api_key=roboflow_key)
+        project = rf.workspace("titulacin").project("person-detection-9a6mk")
+        dataset = project.version(16).download("tfrecord", path)
         
-        fine_tune_checkpoint = os.getcwd()+"/efficientdet_d1_coco17_tpu-32/checkpoint/ckpt-0"
+        fine_tune_checkpoint = os.getcwd()+"/centernet_hg104_512x512_coco17_tpu-8/checkpoint/ckpt-0"
         train_record_fname = os.getcwd()+"/train/People.tfrecord"
         test_record_fname = os.getcwd()+"/test/People.tfrecord"
         label_map_pbtxt_fname = os.getcwd()+"/train/People_label_map.pbtxt"
-        batch_size = 5;
+        batch_size = 16;
         num_steps = 40000;
         num_classes = 1;
 
@@ -86,6 +86,6 @@ class EffecientDetModel:
 
 
 if __name__ == "__main__":
-    efdet = EffecientDetModel()
-    # efdet.download_data(efdet.getselfpath())
-    efdet.train()
+    cenet = CenternetModel()
+    # cenet.download_data(cenet.getselfpath())
+    cenet.train()
