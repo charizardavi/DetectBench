@@ -1,7 +1,6 @@
 from roboflow import Roboflow
 import os
 from dotenv import load_dotenv
-from roboflow import Roboflow
 import re
 from git import Repo
 import urllib.request
