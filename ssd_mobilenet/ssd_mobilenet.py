@@ -80,7 +80,7 @@ class MobileNetModel:
            "--pipeline_config_path={} "
            "--model_dir={} "
            "--checkpoint_dir={} "
-           "--alsologtostderr").format(path+"/model_config.config", path, "TRAINING OUTPUT DIR HERE")
+           "--alsologtostderr").format(path+"/model_config.config", path, path+"/results")
 
 
     def getselfpath(self):
