@@ -25,12 +25,13 @@ class EffecientDetModel:
         os.system("cp object_detection/packages/tf2/setup.py .")
         os.system("python -m pip install .")
 
-
-    def setup_pipeline(self, path: str = os.getcwd()):
+    def download_checkpoint(self):
         urllib.request.urlretrieve("http://download.tensorflow.org/models/object_detection/tf2/20200711/efficientdet_d1_coco17_tpu-32.tar.gz", "compressed_checkpoint.tar.gz")
         ckp = tarfile.open("compressed_checkpoint.tar.gz")
         ckp.extractall()
         ckp.close()
+
+    def setup_pipeline(self, path: str = os.getcwd()):
         fine_tune_checkpoint = path+"/efficientdet_d1_coco17_tpu-32/checkpoint/ckpt-0"
         train_record_fname = path+"/train/People.tfrecord"
         test_record_fname = path+"/test/People.tfrecord"

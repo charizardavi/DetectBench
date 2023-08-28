@@ -25,12 +25,13 @@ class MobileNetModel:
         os.system("cp object_detection/packages/tf2/setup.py .")
         os.system("python -m pip install .")
 
-
-    def setup_pipeline(self, path: str = os.getcwd()):
+    def download_checkpoint(self):
         urllib.request.urlretrieve("http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8.tar.gz", "compressed_checkpoint.tar.gz")
         ckp = tarfile.open("compressed_checkpoint.tar.gz")
         ckp.extractall()
         ckp.close()
+
+    def setup_pipeline(self, path: str = os.getcwd()):
         fine_tune_checkpoint = path+"/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/checkpoint/ckpt-0"
         train_record_fname = path+"/train/People.tfrecord"
         test_record_fname = path+"/test/People.tfrecord"
