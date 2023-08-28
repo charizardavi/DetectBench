@@ -5,7 +5,6 @@ import re
 from git import Repo
 import urllib.request
 import tarfile
-
 import numpy as np
 import tensorflow as tf
 import cv2
@@ -14,16 +13,17 @@ import time
 from object_detection.utils import config_util, label_map_util, visualization_utils as viz_utils
 from object_detection.builders import model_builder
 
-# Effecientdet d1: 640x640px images
+# SSD MobileNet V2: 320x320px images
+
 """
 Performance:
-FPS: 13.07
-mAP50: 0.561
-mAP50-95: 0.207
-F1: 0.391
+FPS: TBD
+mAP50: TBD
+mAP50-95: TBD
+F1: TBD
 """
 
-class EffecientDetModel:
+class SSDSmallModel:
     def download_data(self, path: str = os.getcwd()):
         load_dotenv()
         roboflow_key = os.getenv("ROBOFLOW_KEY")
@@ -41,21 +41,21 @@ class EffecientDetModel:
         os.system("python -m pip install .")
 
     def download_checkpoint(self):
-        urllib.request.urlretrieve("http://download.tensorflow.org/models/object_detection/tf2/20200711/efficientdet_d1_coco17_tpu-32.tar.gz", "compressed_checkpoint.tar.gz")
+        urllib.request.urlretrieve("http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_mobilenet_v2_320x320_coco17_tpu-8.tar.gz", "compressed_checkpoint.tar.gz")
         ckp = tarfile.open("compressed_checkpoint.tar.gz")
         ckp.extractall()
         ckp.close()
 
     def setup_pipeline(self, path: str = os.getcwd()):
-        fine_tune_checkpoint = path+"/efficientdet_d1_coco17_tpu-32/checkpoint/ckpt-0"
+        fine_tune_checkpoint = path+"/ssd_mobilenet_v2_320x320_coco17_tpu-8/checkpoint/ckpt-0"
         train_record_fname = path+"/train/People.tfrecord"
         test_record_fname = path+"/test/People.tfrecord"
         label_map_pbtxt_fname = path+"/train/People_label_map.pbtxt"
-        batch_size = 5;
+        batch_size = 8;
         num_steps = 40000;
         num_classes = 1;
 
-        with open(path + "/efficientdet_d1_coco17_tpu-32/pipeline.config") as f:
+        with open(path + "/ssd_mobilenet_v2_320x320_coco17_tpu-8/pipeline.config") as f:
             s = f.read()
         
         with open('model_config.config', 'w') as f:
@@ -96,7 +96,8 @@ class EffecientDetModel:
            "--model_dir={} "
            "--checkpoint_dir={} "
            "--alsologtostderr".format(path+"/model_config.config", path, path+"/results"))
-        
+
+    
     def load_model(self, path: str = os.getcwd()):
         model = tf.saved_model.load(path+"/saved_model")
         return model.signatures["serving_default"]
@@ -147,7 +148,6 @@ class EffecientDetModel:
             
             # Write the frame to the output video
             out.write(frame)
-            
 
         avg_fps = len(times) / sum(times)
         print(f'FPS: {avg_fps}')
@@ -162,7 +162,6 @@ class EffecientDetModel:
         export_command = f"python tfmodelrepo/research/object_detection/exporter_main_v2.py --pipeline_config_path {pipeline_config_path} --trained_checkpoint_dir {trained_checkpoint_dir} --output_directory {output_directory}"
         os.system(export_command)
 
-
     def getselfpath(self):
         return os.getcwd()
     
@@ -172,12 +171,15 @@ class EffecientDetModel:
 
 
 if __name__ == "__main__":
-    efdet = EffecientDetModel()
-    # efdet.install_api()
-    # efdet.download_data(efdet.getselfpath())
-    # efdet.setup_pipeline()
-    # efdet.train()
-    # efdet.eval()
-    # efdet.export_saved_model()
-    avg_fps = efdet.predict_on_video("people_vid.mp4", "output_vid.mp4", efdet.load_model())
-    print(f"Processed video at {avg_fps:.2f} FPS")
+    ssdnet = SSDSmallModel()
+
+    # ssdnet.install_api()
+    # ssdnet.download_data()
+    # ssdnet.download_checkpoint()
+    # ssdnet.setup_pipeline()
+
+    ssdnet.train()
+    # ssdnet.export_saved_model()
+
+    # avg_fps = ssdnet.predict_on_video("people_vid.mp4", "output_vid.mp4", ssdnet.load_model())
+    # print(f"Processed video at {avg_fps:.2f} FPS")

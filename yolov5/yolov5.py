@@ -10,9 +10,9 @@ import re
 """
 Performance:
 FPS: 108.4707631056947
-F1: 0.796910569105691
 mAP50: .83
 mAP50-95: 0.537
+F1: 0.796910569105691
 """
 class Yolov5Model:
     def download_data(self, path:str):

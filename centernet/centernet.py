@@ -14,16 +14,18 @@ import time
 from object_detection.utils import config_util, label_map_util, visualization_utils as viz_utils
 from object_detection.builders import model_builder
 
-# Effecientdet d1: 640x640px images
+
+# CenterNet Resnet50 V1 FPN: 512x512px images
+
 """
 Performance:
-FPS: 13.07
-mAP50: 0.561
-mAP50-95: 0.207
-F1: 0.391
+FPS: 22
+mAP50: .666
+mAP50-95: 0.371
+F1: 0.59
 """
 
-class EffecientDetModel:
+class CenterNetModel:
     def download_data(self, path: str = os.getcwd()):
         load_dotenv()
         roboflow_key = os.getenv("ROBOFLOW_KEY")
@@ -41,13 +43,13 @@ class EffecientDetModel:
         os.system("python -m pip install .")
 
     def download_checkpoint(self):
-        urllib.request.urlretrieve("http://download.tensorflow.org/models/object_detection/tf2/20200711/efficientdet_d1_coco17_tpu-32.tar.gz", "compressed_checkpoint.tar.gz")
+        urllib.request.urlretrieve("http://download.tensorflow.org/models/object_detection/tf2/20200711/centernet_resnet50_v1_fpn_512x512_coco17_tpu-8.tar.gz", "compressed_checkpoint.tar.gz")
         ckp = tarfile.open("compressed_checkpoint.tar.gz")
         ckp.extractall()
         ckp.close()
 
     def setup_pipeline(self, path: str = os.getcwd()):
-        fine_tune_checkpoint = path+"/efficientdet_d1_coco17_tpu-32/checkpoint/ckpt-0"
+        fine_tune_checkpoint = path+"/centernet_resnet50_v1_fpn_512x512_coco17_tpu-8/checkpoint/ckpt-0"
         train_record_fname = path+"/train/People.tfrecord"
         test_record_fname = path+"/test/People.tfrecord"
         label_map_pbtxt_fname = path+"/train/People_label_map.pbtxt"
@@ -55,7 +57,7 @@ class EffecientDetModel:
         num_steps = 40000;
         num_classes = 1;
 
-        with open(path + "/efficientdet_d1_coco17_tpu-32/pipeline.config") as f:
+        with open(path + "/centernet_resnet50_v1_fpn_512x512_coco17_tpu-8/pipeline.config") as f:
             s = f.read()
         
         with open('model_config.config', 'w') as f:
@@ -96,7 +98,8 @@ class EffecientDetModel:
            "--model_dir={} "
            "--checkpoint_dir={} "
            "--alsologtostderr".format(path+"/model_config.config", path, path+"/results"))
-        
+
+    
     def load_model(self, path: str = os.getcwd()):
         model = tf.saved_model.load(path+"/saved_model")
         return model.signatures["serving_default"]
@@ -172,12 +175,17 @@ class EffecientDetModel:
 
 
 if __name__ == "__main__":
-    efdet = EffecientDetModel()
-    # efdet.install_api()
-    # efdet.download_data(efdet.getselfpath())
-    # efdet.setup_pipeline()
-    # efdet.train()
-    # efdet.eval()
-    # efdet.export_saved_model()
-    avg_fps = efdet.predict_on_video("people_vid.mp4", "output_vid.mp4", efdet.load_model())
+    centernet = CenterNetModel()
+
+    # centernet.install_api()
+    # centernet.download_data(centernet.getselfpath())
+    # centernet.download_checkpoint()
+    # centernet.setup_pipeline()
+
+    # centernet.train()
+    # centernet.export_saved_model()
+
+    # centernet.eval()
+
+    avg_fps = centernet.predict_on_video("people_vid.mp4", "output_vid.mp4", centernet.load_model())
     print(f"Processed video at {avg_fps:.2f} FPS")
