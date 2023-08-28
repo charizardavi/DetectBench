@@ -98,4 +98,4 @@ if __name__ == "__main__":
     ssdnet.download_data(ssdnet.getselfpath())
     ssdnet.setup_pipeline()
 
-    MobileNetModel.train()
+    ssdnet.train()
