@@ -7,9 +7,9 @@ from git import Repo
 import urllib.request
 import tarfile
 
-# Effecientdet d1: 640x640px images
+# SSD MobileNet V2 FPNLite: 640x640px images
 
-class EffecientDetModel:
+class MobileNetModel:
     def download_data(self, path: str = os.getcwd()):
         load_dotenv()
         roboflow_key = os.getenv("ROBOFLOW_KEY")
@@ -28,11 +28,11 @@ class EffecientDetModel:
 
 
     def setup_pipeline(self, path: str = os.getcwd()):
-        urllib.request.urlretrieve("http://download.tensorflow.org/models/object_detection/tf2/20200711/efficientdet_d1_coco17_tpu-32.tar.gz", "compressed_checkpoint.tar.gz")
+        urllib.request.urlretrieve("http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8.tar.gz", "compressed_checkpoint.tar.gz")
         ckp = tarfile.open("compressed_checkpoint.tar.gz")
         ckp.extractall()
         ckp.close()
-        fine_tune_checkpoint = path+"/efficientdet_d1_coco17_tpu-32/checkpoint/ckpt-0"
+        fine_tune_checkpoint = path+"/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/checkpoint/ckpt-0"
         train_record_fname = path+"/train/People.tfrecord"
         test_record_fname = path+"/test/People.tfrecord"
         label_map_pbtxt_fname = path+"/train/People_label_map.pbtxt"
@@ -40,7 +40,7 @@ class EffecientDetModel:
         num_steps = 40000;
         num_classes = 1;
 
-        with open(path + "/efficientdet_d1_coco17_tpu-32/pipeline.config") as f:
+        with open(path + "/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/pipeline.config") as f:
             s = f.read()
         
         with open('model_config.config', 'w') as f:
@@ -92,8 +92,10 @@ class EffecientDetModel:
 
 
 if __name__ == "__main__":
-    efdet = EffecientDetModel()
-    # efdet.install_api()
-    # efdet.download_data(efdet.getselfpath())
-    # efdet.setup_pipeline()
-    efdet.train()
+    ssdnet = MobileNetModel()
+
+    ssdnet.install_api()
+    ssdnet.download_data(ssdnet.getselfpath())
+    ssdnet.setup_pipeline()
+
+    MobileNetModel.train()

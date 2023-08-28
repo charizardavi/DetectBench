@@ -1,5 +1,5 @@
-from yolov8.yolov8 import Yolov8Model
-from yolov5.yolov5 import Yolov5Model
+# from yolov8.yolov8 import Yolov8Model
+# from yolov5.yolov5 import Yolov5Model
 import os
 import subprocess
 

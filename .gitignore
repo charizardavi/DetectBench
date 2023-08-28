@@ -55,3 +55,8 @@ results/
 *.tar.gz
 
 model_config.config
+
+model_config_template.config
+
+*.mp4
+*.m4a

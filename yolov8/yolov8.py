@@ -2,8 +2,15 @@ from roboflow import Roboflow
 from ultralytics import YOLO
 import os
 from dotenv import load_dotenv
-
-
+import cv2
+import time
+"""
+Performance:
+FPS: 77.07941985904027
+mAP50: 0.8106877673662868
+mAP50-95: 0.5292285064885559
+F1: 0.7764258101012973
+"""
 
 class Yolov8Model:
     def download_data(self, path: str):
@@ -44,15 +51,71 @@ class Yolov8Model:
         with open(file_path, 'w') as file:
             file.writelines(lines)
 
-    def val(self, yolov8path:str):
-        print(yolov8path)
+    def mAP50(self, yolov8path:str):
         model = YOLO(yolov8path+'/runs/detect/train14/weights/best.pt')
-        metrics = model.val(yolov8path+"/dataset/data.yaml")  # no arguments needed, dataset and settings remembered
+        metrics = model.val(yolov8path+"/dataset/data.yaml") 
         return metrics.box.map50
-        # metrics.box.map    # map50-95
-        # metrics.box.map50  # map50
-        # metrics.box.map75  # map75
-        # metrics.box.maps   # a list contains map50-95 of each category
+    
+    def mAP50_95(self, yolov8path:str):
+        model = YOLO(yolov8path+'/runs/detect/train14/weights/best.pt')
+        metrics = model.val(yolov8path+"/dataset/data.yaml")
+        return metrics.box.map
+    
+    # metrics.box.map    # map50-95
+    # metrics.box.map50  # map50
+    # metrics.box.map75  # map75
+    # metrics.box.maps   # a list contains map50-95 of each category
+
+
+
+    def val(self, yolov8path:str):
+        model = YOLO(yolov8path+'/runs/detect/train14/weights/best.pt')
+        metrics = model.val(yolov8path+"/dataset/data.yaml") 
+        P = metrics.results_dict["metrics/precision(B)"]
+        R = metrics.results_dict["metrics/recall(B)"]
+        if P + R == 0:
+            return 0
+        return 2 * (P * R) / (P + R)
+
+    
+
+    def benchmark_fps(self, video_path: str, model_path: str):
+        # Initialize YOLO model
+        model = YOLO(model_path)
+        
+        # Open the video file
+        cap = cv2.VideoCapture(video_path)
+        
+        # Check if the video file was opened successfully
+        if not cap.isOpened():
+            print("Error: Could not open video file.")
+            return
+        
+        # Initialize variables to calculate FPS
+        frame_count = 0
+        start_time = time.time()
+        
+        while True:
+            # Capture each frame from the video
+            ret, frame = cap.read()
+            
+            # Break the loop if the video has ended
+            if not ret:
+                break
+            
+            # Perform inference on the current frame
+            results = model(frame)
+            
+            frame_count += 1
+        
+        # Release the video capture object
+        cap.release()
+        
+        # Calculate and print FPS
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        fps = frame_count / elapsed_time
+        print(f"FPS: {fps}")
 
     def getpath(self):
         return os.getcwd()+"/yolov8"
@@ -67,7 +130,13 @@ class Yolov8Model:
         return os.getcwd()+"/dataset"
 
 if __name__ == "__main__":
-    print(os.getcwd())
+    yolo = Yolov8Model()
+    # video_path = 'people_vid.mp4'  # Replace with your video path
+    # model_weights = 'runs/detect/train14/weights/best.pt'  # Replace with your model weights
+    # yolo.benchmark_fps(video_path, model_weights)
+    # print(yolo.mAP50(yolo.getselfpath()))
+    # print(yolo.mAP50_95(yolo.getselfpath()))
+    print(yolo.val(yolo.getselfpath()))
     # yolo.download_data(yolo.getselfdatapath())
     # yolo.val(yolo.getselfdatapath())
     # yolo.train()
