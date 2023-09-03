@@ -7,6 +7,8 @@ import cv2
 import time
 import subprocess
 import re
+from contextlib import redirect_stdout
+
 """
 Performance:
 FPS: 108.4707631056947
@@ -42,37 +44,7 @@ class Yolov5Model:
         os.system("python yolov5repo/train.py --img 640 --batch 16 --epochs 100 --data yolov5repo/data.yaml --weights yolov5s.pt --cache")
     
     def val(self):
-        try:
-            val_output = subprocess.check_output([
-                'python', 
-                'yolov5repo/val.py',
-                '--data', 'yolov5repo/data.yaml',
-                '--weights', 'yolov5repo/runs/train/exp3/weights/best.pt'
-            ], stderr=subprocess.STDOUT).decode('utf-8')
-
-            print("Captured output: ")
-            print(val_output)
-
-            # Extracting mAP and Precision, Recall for F1 calculation
-            map_value = re.search(r"mAP50-95\s+=\s+(\d+\.\d+)", val_output)
-            p_value = re.search(r"P\s+=\s+(\d+\.\d+)", val_output)
-            r_value = re.search(r"R\s+=\s+(\d+\.\d+)", val_output)
-
-            if map_value and p_value and r_value:
-                map_value = float(map_value.group(1))
-                p_value = float(p_value.group(1))
-                r_value = float(r_value.group(1))
-
-                # Calculating F1 Score
-                f1_value = 2 * (p_value * r_value) / (p_value + r_value)
-
-                print(f"Validation Metrics: mAP: {map_value}, F1: {f1_value}")
-
-            else:
-                print("Could not find mAP and F1 values.")
-
-        except subprocess.CalledProcessError as e:
-            print(f"Validation script failed with error: {e.output.decode('utf-8')}")
+        os.system('python yolov5repo/val.py --data yolov5repo/data.yaml --weights yolov5repo/runs/train/exp/weights/best.pt')
         
     def benchmark_fps(self, video_path, model_weights, output_path='output_video.mp4'):
         # Initialize the model
@@ -131,6 +103,7 @@ class Yolov5Model:
         # Calculate FPS
         avg_fps = len(times) / sum(times)
         print(f'FPS: {avg_fps}')
+        return avg_fps
 
 
 
@@ -155,12 +128,6 @@ class Yolov5Model:
     def getselfpath(self):
         return os.getcwd()
     
-    def getF1(self, precision, recall):
-        if precision + recall == 0:
-            return 0.0
-        f1_score = 2 * (precision * recall) / (precision + recall)
-        return f1_score
-    
     
     
     # def predict(self):
@@ -171,11 +138,7 @@ class Yolov5Model:
 
 if __name__ == "__main__":
     yolo = Yolov5Model()
-    video_path = 'people_vid.mp4'  # Replace with your video path
-    model_weights = 'yolov5repo/runs/train/exp3/weights/best.pt'  # Replace with your model weights
-    yolo.benchmark_fps(video_path, model_weights)
-    # yolo.val()
-    # print(yolo.getF1(.845, .754))
     # yolo.download_data(yolo.getselfpath())
     # yolo.train()
-    # yolo.predict()
+    # yolo.val()
+    

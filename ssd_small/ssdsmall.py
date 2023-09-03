@@ -17,10 +17,10 @@ from object_detection.builders import model_builder
 
 """
 Performance:
-FPS: TBD
-mAP50: TBD
-mAP50-95: TBD
-F1: TBD
+FPS: 27
+mAP50: 0.042
+mAP50-95: 0.013
+F1: 0.0675443156
 """
 
 class SSDSmallModel:
@@ -180,6 +180,6 @@ if __name__ == "__main__":
 
     ssdnet.train()
     # ssdnet.export_saved_model()
-
+    # ssdnet.eval()
     # avg_fps = ssdnet.predict_on_video("people_vid.mp4", "output_vid.mp4", ssdnet.load_model())
     # print(f"Processed video at {avg_fps:.2f} FPS")
