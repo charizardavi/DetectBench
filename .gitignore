@@ -28,7 +28,9 @@ Thumbs.db
 runs/
 
 # Ignore yolo weights
-*.pt
+# *.pt
+yolov8n.pt
+yolov5s.pt
 
 # Ignore dataset_loc files
 dataset_loc.txt

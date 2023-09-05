@@ -17,7 +17,7 @@ mAP50-95: 0.537
 F1: 0.796910569105691
 """
 class Yolov5Model:
-    def download_data(self, path:str):
+    def download_data(self, path:str = os.getcwd()):
         Repo.clone_from("https://github.com/ultralytics/yolov5.git", path+"/yolov5repo")
         global dataset
         load_dotenv()
@@ -43,8 +43,8 @@ class Yolov5Model:
     def train(self):
         os.system("python yolov5repo/train.py --img 640 --batch 16 --epochs 100 --data yolov5repo/data.yaml --weights yolov5s.pt --cache")
     
-    def val(self):
-        os.system('python yolov5repo/val.py --data yolov5repo/data.yaml --weights yolov5repo/runs/train/exp/weights/best.pt')
+    def val(self, yolov5path = os.getcwd()):
+        os.system('python {}/yolov5repo/val.py --data {}/yolov5repo/data.yaml --weights {}/best.pt'.format(yolov5path, yolov5path, yolov5path))
         
     def benchmark_fps(self, video_path, model_weights, output_path='output_video.mp4'):
         # Initialize the model

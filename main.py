@@ -135,9 +135,13 @@ t2.start()
 t1.join()
 t2.join()
 
-# current_directory = os.getcwd()
 
-# yolov5_path = current_directory + "/yolov5"
-# yolov5_process = subprocess.Popen(['python', 'yolov5.py'], cwd=yolov5_path)
-# yolov5_monitor = psutil.Process(yolov5_process.pid)
+yolov5 = Yolov5Model()
+yolov8 = Yolov8Model()
+
+yolov5.download_data(os.getcwd()+"/yolov5")
+yolov8.download_data(os.getcwd()+"/yolov8/dataset")
+
+yolov5.val(os.getcwd()+"/yolov5")
+yolov8.val(os.getcwd()+"/yolov8")
 

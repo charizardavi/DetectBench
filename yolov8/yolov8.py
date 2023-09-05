@@ -56,12 +56,12 @@ class Yolov8Model:
             file.writelines(lines)
 
     def mAP50(self, yolov8path:str):
-        model = YOLO(yolov8path+'/runs/detect/train/weights/best.pt')
+        model = YOLO(yolov8path+'/best.pt')
         metrics = model.val(yolov8path+"/dataset/data.yaml") 
         return metrics.box.map50
     
     def mAP50_95(self, yolov8path:str):
-        model = YOLO(yolov8path+'/runs/detect/train/weights/best.pt')
+        model = YOLO(yolov8path+'/best.pt')
         metrics = model.val(yolov8path+"/dataset/data.yaml")
         return metrics.box.map
     
@@ -72,8 +72,8 @@ class Yolov8Model:
 
 
 
-    def val(self, yolov8path:str):
-        model = YOLO(yolov8path+'/runs/detect/train/weights/best.pt')
+    def val(self, yolov8path:str = os.getcwd()):
+        model = YOLO(yolov8path+'/best.pt')
         metrics = model.val(yolov8path+"/dataset/data.yaml") 
         P = metrics.results_dict["metrics/precision(B)"]
         R = metrics.results_dict["metrics/recall(B)"]
